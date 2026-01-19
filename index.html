@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espacio de Repaso - FICDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ficde-azul-dark: #134252;
+            --ficde-azul-light: #2c5c6e;
+            --ficde-naranja: #e68161;
+            --ficde-naranja-hover: #ff9f85;
+            --tarjeta-bg: #f0f4f5;
+            --input-bg: #e2e8eb;
+            --texto-principal: #0f2d38;
+            --texto-secundario: #4a636e;
+            --verde-exito: #2e7d32;
+            --verde-bg: #c8e6c9;
+            --rojo-error: #c62828;
+            --naranja-bg: #ffe0b2;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--ficde-azul-dark) 0%, #0a252e 100%);
+            min-height: 100vh;
+            color: var(--texto-principal);
+            padding: 20px;
+            background-attachment: fixed;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo-img { height: 50px; width: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+
+        .module-tag {
+            background: var(--ficde-naranja);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .welcome-card {
+            background: var(--tarjeta-bg);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border-bottom: 6px solid var(--ficde-naranja);
+            margin-bottom: 30px;
+        }
+
+        .welcome-title {
+            color: var(--ficde-azul-dark);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .fede-avatar-large {
+            width: 140px; height: 140px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: var(--ficde-naranja);
+            padding: 5px;
+            box-shadow: 0 10px 25px rgba(230, 129, 97, 0.5);
+            cursor: pointer;
+            transition: transform 0.3s;
+            overflow: hidden;
+        }
+
+        .fede-avatar-large:hover { transform: scale(1.1); }
+
+        .fede-avatar-large img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid white;
+        }
+
+        .blocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .block-card {
+            background: var(--tarjeta-bg);
+            padding: 30px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .block-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--ficde-naranja);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .block-icon {
+            font-size: 3rem; margin-bottom: 15px;
+            background: rgba(19, 66, 82, 0.1);
+            width: 70px; height: 70px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; color: var(--ficde-azul-dark);
+        }
+
+        .block-title { color: var(--ficde-azul-dark); font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
+
+        .block-desc { color: var(--texto-secundario); font-size: 0.9rem; line-height: 1.5; }
+
+        .activity-screen {
+            display: none;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .activity-screen.active { display: grid; }
+
+        .tutor-sidebar {
+            background: var(--ficde-azul-light);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            position: sticky; top: 20px;
+        }
+
+        .tutor-bubble {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: var(--ficde-azul-dark);
+            margin-top: 20px;
+            position: relative;
+            text-align: left;
+        }
+
+        .tutor-bubble::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            border-width: 0 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent rgba(255,255,255,0.95);
+            transform: translateX(-50%);
+        }
+
+        .activity-content {
+            background: var(--tarjeta-bg);
+            padding: 40px;
+            border-radius: 16px;
+            min-height: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .act-badge {
+            background: var(--ficde-naranja);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .act-title { font-size: 1.8rem; color: var(--ficde-azul-dark); margin: 15px 0; font-weight: 800; }
+
+        .act-instruction { font-size: 1.1rem; color: var(--texto-secundario); margin-bottom: 30px; }
+
+        .student-input {
+            width: 100%;
+            height: 150px;
+            padding: 20px;
+            background: var(--input-bg);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            color: var(--ficde-azul-dark);
+            transition: all 0.3s;
+        }
+
+        .student-input:focus { background: white; border-color: var(--ficde-naranja); outline: none; }
+
+        .fill-input {
+            border: none;
+            border-bottom: 2px solid var(--ficde-naranja);
+            background: transparent;
+            font-weight: 700;
+            color: var(--ficde-azul-dark);
+            text-align: center;
+            width: 150px;
+            font-size: 1.1rem;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 18px;
+            margin-top: 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            background: linear-gradient(90deg, var(--ficde-naranja), #ff9f85);
+            color: white;
+            box-shadow: 0 6px 20px rgba(230, 129, 97, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .btn-action:hover { transform: translateY(-3px); }
+
+        .btn-back {
+            background: transparent;
+            color: var(--texto-secundario);
+            box-shadow: none;
+            border: 2px solid #ccc;
+            margin-top: 15px;
+        }
+
+        .btn-back:hover { background: #e0e0e0; color: var(--ficde-azul-dark); }
+
+        .traffic-row, .checklist-item {
+            background: white;
+            margin-bottom: 12px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .traffic-row:hover, .checklist-item:hover { border-color: var(--ficde-naranja); transform: translateX(5px); }
+
+        .traffic-btn {
+            width: 35px; height: 35px;
+            border-radius: 50%; border: 2px solid #ddd;
+            cursor: pointer;
+            opacity: 0.3;
+        }
+
+        .traffic-btn.active { opacity: 1; transform: scale(1.2); border-color: var(--ficde-azul-dark); }
+
+        .bg-green { background: #4CAF50; }
+
+        .bg-yellow { background: #FFC107; }
+
+        .bg-red { background: #f44336; }
+
+        .check-box {
+            width: 24px; height: 24px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .checklist-item.selected { border-color: var(--ficde-naranja); background: #fff5f0; }
+
+        .checklist-item.selected .check-box { background: var(--ficde-naranja); border-color: var(--ficde-naranja); color: white; }
+
+        .feedback-area {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            display: none;
+            animation: slideUp 0.4s;
+        }
+
+        .feedback-success { background: var(--verde-bg); color: #1b5e20; border-left: 6px solid var(--verde-exito); }
+
+        .feedback-retry { background: var(--naranja-bg); color: #bf360c; border-left: 6px solid #ef6c00; }
+
+        .feedback-fail { background: #cfd8dc; color: #37474f; border-left: 6px solid #455a64; }
+
+        #musicToggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--ficde-naranja);
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .activity-screen { grid-template-columns: 1fr; }
+            .tutor-sidebar { display: flex; align-items: center; gap: 20px; }
+            .fede-avatar-large { width: 80px; height: 80px; }
+            .tutor-bubble::after { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- AUDIOS MP3 - Todos en la misma carpeta -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="chill-study-desk-focus-concentration-lofi-451180.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="saludoInicial" preload="auto" src="saludoinicial.mp3"></audio>
+    <audio id="mensaje1Ejercicios" preload="auto" src="mensaje1ejercicios.mp3"></audio>
+    <audio id="mensaje2Ejercicios" preload="auto" src="mensaje2ejercicios.mp3"></audio>
+    <audio id="mensaje3Ejercicios" preload="auto" src="mensaje3ejercicios.mp3"></audio>
+    <audio id="mensaje4Ejercicios" preload="auto" src="mensaje4ejercicios.mp3"></audio>
+    <audio id="respuestaCorrecta" preload="auto" src="respuestacorrecta.mp3"></audio>
+    <audio id="primerError" preload="auto" src="primererror.mp3"></audio>
+    <audio id="segundoError" preload="auto" src="segundoerror.mp3"></audio>
+    <audio id="loLograste" preload="auto" src="lolograste.mp3"></audio>
+
+    <audio id="hoverSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.m4a"></audio>
+    <audio id="clickSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.m4a"></audio>
+    <audio id="successSound" preload="auto" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.m4a"></audio>
+
+    <button id="musicToggle" onclick="toggleMusic()">🔇</button>
+
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="logo.png" alt="FICDE" class="logo-img" onerror="this.style.display='none'; document.getElementById('altLogo').style.display='block'">
+                <h2 id="altLogo" style="display:none; color:white; font-weight:800;">FICDE</h2>
+            </div>
+            <div class="module-tag">Módulo Manual Gestión Administrativa y Comercial en la Farmacia</div>
+        </header>
+
+        <div id="selectionScreen">
+            <div class="welcome-card">
+                <div class="fede-avatar-large" onclick="playAudio('saludoInicial')">
+                    <img src="personaje.gif" alt="Fede">
+                </div>
+                <h1 class="welcome-title">Espacio de Repaso Interactivo</h1>
+                <p style="color: var(--texto-secundario); font-size: 1.1rem;">Donde el conocimiento se convierte en acción</p>
+            </div>
+
+            <div class="blocks-grid">
+                <div class="block-card" onclick="startModule('sintesis')">
+                    <div class="block-icon">🧠</div>
+                    <div class="block-title">Síntesis</div>
+                    <div class="block-desc">Marco legal, rol de DINAVISA, cadena de distribución del medicamento, recepción y control básico, almacenamiento, conservación, cadena de frío, reposición y stock en la farmacia.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('analisis')">
+                    <div class="block-icon">🔍</div>
+                    <div class="block-title">Análisis Crítico</div>
+                    <div class="block-desc">Software de gestión y facturación, administración de stock, trazabilidad y eslabones de la cadena, sectores normados, heladera y registros, residuos patógenos, dispensación y farmacovigilancia.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('escenarios')">
+                    <div class="block-icon">🎬</div>
+                    <div class="block-title">Escenarios</div>
+                    <div class="block-desc">Casos de recepción y verificación de pedidos, control de stock y vencimientos, ruptura de cadena de frío, manejo de residuos patógenos, diseño del local, situaciones de dispensación y atención al paciente.</div>
+                </div>
+
+                <div class="block-card" onclick="startModule('practica')">
+                    <div class="block-icon">⚡</div>
+                    <div class="block-title">Práctica</div>
+                    <div class="block-desc">Checklists de recepción y orden, manejo de rangos de temperatura, organización de depósito y salón, clasificación de residuos, tratamiento del cliente “consumidor”, registro de residuos y uso de reportes del sistema.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="activityScreen" class="activity-screen">
+            <div class="tutor-sidebar">
+                <div class="fede-avatar-large" style="width: 100px; height: 100px; border-color: var(--ficde-naranja);" onclick="replayTutorMessage()">
+                    <img src="personaje.gif" alt="Fede">
+                </div>
+                <div style="flex:1;">
+                    <h3 style="color:var(--ficde-naranja); margin-bottom:5px;">Tutor Fede</h3>
+                    <div class="tutor-bubble" id="tutorMessage"></div>
+                </div>
+            </div>
+
+            <div class="activity-content" id="activityContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // ===== GESTIÓN DE AUDIO MP3 =====
+        const audioFiles = {
+            saludoInicial: document.getElementById('saludoInicial'),
+            mensaje1: document.getElementById('mensaje1Ejercicios'),
+            mensaje2: document.getElementById('mensaje2Ejercicios'),
+            mensaje3: document.getElementById('mensaje3Ejercicios'),
+            mensaje4: document.getElementById('mensaje4Ejercicios'),
+            correcto: document.getElementById('respuestaCorrecta'),
+            error1: document.getElementById('primerError'),
+            error2: document.getElementById('segundoError'),
+            lolograste: document.getElementById('loLograste')
+        };
+
+        function playAudio(audioKey) {
+            if (audioFiles[audioKey]) {
+                audioFiles[audioKey].currentTime = 0;
+                audioFiles[audioKey].play().catch(err => console.log('Error al reproducir audio:', err));
+            }
+        }
+
+        const bgMusic = document.getElementById('bgMusic');
+        const clickSoundEl = document.getElementById('clickSound');
+        const successSoundEl = document.getElementById('successSound');
+        const hoverSoundEl = document.getElementById('hoverSound');
+
+        let musicOn = false;
+        let audioUnlocked = false;
+
+        function unlockAudio() {
+            if (audioUnlocked) return;
+            [clickSoundEl, successSoundEl, hoverSoundEl].forEach(a => {
+                a.volume = 0;
+                const p = a.play();
+                if (p) p.then(() => { a.pause(); a.currentTime = 0; a.volume = 1; }).catch(()=>{});
+            });
+            audioUnlocked = true;
+        }
+
+        document.addEventListener('pointerdown', unlockAudio, { once: true });
+        document.addEventListener('keydown', unlockAudio, { once: true });
+
+        function toggleMusic() {
+            unlockAudio();
+            if (!musicOn) {
+                bgMusic.volume = 0.1;
+                bgMusic.play().catch(() => {});
+                document.getElementById('musicToggle').innerText = '🎵';
+            } else {
+                bgMusic.pause();
+                document.getElementById('musicToggle').innerText = '🔇';
+            }
+            musicOn = !musicOn;
+        }
+
+        function playSound(type) {
+            if (!audioUnlocked) return;
+            try {
+                if (type === 'click') { clickSoundEl.currentTime=0; clickSoundEl.volume=0.8; clickSoundEl.play().catch(()=>{}); }
+                if (type === 'success') { successSoundEl.currentTime=0; successSoundEl.volume=0.8; successSoundEl.play().catch(()=>{}); }
+                if (type === 'hover') { hoverSoundEl.currentTime=0; hoverSoundEl.volume=0.2; hoverSoundEl.play().catch(()=>{}); }
+            } catch (e) {}
+        }
+
+        function wireUiSounds() {
+            document.querySelectorAll('.block-card, .btn-action, .checklist-item, .traffic-row, .fede-avatar-large').forEach(el => {
+                if (el.dataset.sound === '1') return;
+                el.dataset.sound = '1';
+                el.addEventListener('mouseenter', () => playSound('hover'));
+                el.addEventListener('click', () => playSound('click'));
+            });
+        }
+
+        window.addEventListener('load', wireUiSounds);
+
+        // ===== NORMALIZACIÓN DE TEXTO =====
+        function normalizar(txt) {
+            return txt
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
+        }
+
+       // ===== ACTIVIDADES: MÓDULO 4 – GESTIÓN ADMINISTRATIVA Y COMERCIAL EN LA FARMACIA (según manual) ===
+const modules = {
+
+    // ===================== SÍNTESIS =====================
+    sintesis: [
+        {
+            type: 'text',
+            badge: 'DINAVISA',
+            title: 'Rol de DINAVISA',
+            instruction: 'Con tus palabras: ¿qué es DINAVISA y qué controla en relación con los medicamentos?',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                let ok = 0;
+                if (v.includes('vigilancia') || v.includes('control') || v.includes('regula')) ok++;
+                if (v.includes('medic') || v.includes('productos para la salud') || v.includes('dispositivos')) ok++;
+                if (v.includes('ley') || v.includes('1119') || v.includes('498/14') || v.includes('habilit')) ok++;
+                return ok >= 1;
+            },
+            tutor: 'Pensá en el organismo que fija normas para fabricar, importar, distribuir y vender productos para la salud.',
+            explanation: 'DINAVISA es la Dirección Nacional de Vigilancia Sanitaria, que establece normas y controla la gestión de medicamentos, vacunas, sangre, hemoderivados y dispositivos médicos en Paraguay.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Normativa',
+            title: 'Marco legal básico',
+            instruction: 'Selecciona normas que regulan la gestión de medicamentos y productos para la salud.',
+            items: [
+                { text: 'Ley 1119/97 de Productos para la Salud', correct: true },
+                { text: 'Decreto 498/14 asociado a Ley 1119/97', correct: true },
+                { text: 'Ley 3361/07 sobre residuos patógenos', correct: true },
+                { text: 'Código de Tránsito y Seguridad Vial', correct: false }
+            ],
+            tutor: 'Fijate qué leyes menciona el manual cuando habla de medicamentos y residuos.',
+            explanation: 'La Ley 1119/97 y el Decreto 498/14 regulan productos para la salud, y la Ley 3361/07 norma el tratamiento de residuos patógenos.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Cadena',
+            title: 'Cadena de distribución',
+            instruction: 'Marca en verde circuitos correctos de distribución de medicamentos.',
+            items: [
+                { text: 'Laboratorio → Distribuidoras farmacéuticas → Droguerías → Farmacias', color: 'green' },
+                { text: 'Laboratorio → Distribuidoras farmacéuticas → Farmacias', color: 'green' },
+                { text: 'Laboratorio → Público general sin intermediarios', color: 'red' },
+                { text: 'Distribuidoras → Farmacias no habilitadas', color: 'red' }
+            ],
+            tutor: 'Pensá en los esquemas A y B que muestra el manual y en que el último eslabón es la farmacia.',
+            explanation: 'Los medicamentos se distribuyen desde laboratorios a distribuidoras y droguerías, y de allí a farmacias habilitadas o depósitos de establecimientos asistenciales.'
+        },
+        {
+            type: 'text',
+            badge: 'Proveedor',
+            title: 'Origen de los medicamentos',
+            instruction: '¿Por qué es importante conocer el origen y la habilitación de los proveedores?',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    v.includes('habilit') ||
+                    v.includes('certific') ||
+                    v.includes('ministerio de salud') ||
+                    v.includes('segurid') ||
+                    v.includes('legal')
+                );
+            },
+            tutor: 'Pensá en exigir certificado del Ministerio de Salud y evitar productos de origen dudoso.',
+            explanation: 'Conocer el origen y exigir habilitación asegura que los medicamentos provienen de establecimientos autorizados y cumplen la normativa sanitaria.'
+        },
+        {
+            type: 'blanks',
+            badge: 'Proceso',
+            title: 'Recepción de medicamentos',
+            instruction: 'Completa tres pasos básicos en la recepción de medicamentos: ______, ______, ______.',
+            blanks: ['Recepción', 'Control', 'Ingreso'],
+            tutor: 'El manual describe recepción, control contra factura y carga al stock del sistema.',
+            explanation: 'La recepción incluye recibir el pedido, controlarlo contra la factura y luego ingresar los productos al stock del sistema de farmacia.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Control',
+            title: 'Control en la recepción',
+            instruction: 'Selecciona aspectos que deben controlarse al recibir medicamentos.',
+            items: [
+                { text: 'Coincidencia con la factura (artículos y cantidades)', correct: true },
+                { text: 'Fechas de vencimiento y descuentos', correct: true },
+                { text: 'Integridad de envases (no golpeados ni abiertos)', correct: true },
+                { text: 'Color del logo de la droguería', correct: false }
+            ],
+            tutor: 'Pensá en calidad, vencimiento y coincidencia con lo facturado.',
+            explanation: 'En el control se revisan artículos contra la factura, vencimientos, precios, descuentos y que los envases estén íntegros.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Almacenamiento',
+            title: 'Buenas prácticas de almacenamiento',
+            instruction: 'Marca en verde las prácticas correctas de almacenamiento en farmacia.',
+            items: [
+                { text: 'Guardar medicamentos en estantes, góndolas o pallets, nunca en el piso', color: 'green' },
+                { text: 'Separar medicamentos de otros productos de perfumería y regalería', color: 'green' },
+                { text: 'Almacenar todo mezclado y sin orden', color: 'red' },
+                { text: 'Mantener depósito limpio y ordenado', color: 'green' }
+            ],
+            tutor: 'Recordá que la normativa prohíbe almacenar productos en el piso y exige orden y limpieza.',
+            explanation: 'Los medicamentos se almacenan en estanterías diferenciadas, con orden y limpieza, sin contacto directo con el piso.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Conservación',
+            title: 'Condiciones de conservación',
+            instruction: 'Selecciona condiciones adecuadas para conservar correctamente los productos.',
+            items: [
+                { text: 'Ambiente fresco, seco, sin luz solar directa', correct: true },
+                { text: 'Temperatura ambiente no superior a 25 °C para productos no refrigerados', correct: true },
+                { text: 'Almacenar cremas y supositorios a más de 35 °C', correct: false },
+                { text: 'Evitar ambientes con mucha humedad', correct: true }
+            ],
+            tutor: 'Pensá en evitar calor excesivo, humedad y luz directa.',
+            explanation: 'La conservación adecuada exige ambientes frescos, secos, sin luz directa y evitar temperaturas altas que desnaturalicen formas farmacéuticas.'
+        },
+        {
+            type: 'text',
+            badge: 'Refrigerados',
+            title: 'Cadena de frío',
+            instruction: 'Explica qué es la cadena de frío y por qué es importante en algunos medicamentos.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    v.includes('helader') ||
+                    v.includes('2') && v.includes('8°') ||
+                    v.includes('refriger') ||
+                    v.includes('temperatura') ||
+                    v.includes('vacuna') ||
+                    v.includes('insulin')
+                );
+            },
+            tutor: 'Recordá el rango de 2 °C a 8 °C y el uso de bolsas térmicas o telgopor.',
+            explanation: 'La cadena de frío mantiene ciertos medicamentos entre 2 °C y 8 °C, desde la recepción hasta la entrega al paciente, para conservar su estabilidad y eficacia.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Rotación',
+            title: 'Reposición y stock',
+            instruction: 'Marca en verde afirmaciones correctas sobre reposición y control de stock.',
+            items: [
+                { text: 'Los medicamentos de stock mínimo suelen reponerse diariamente', color: 'green' },
+                { text: 'Los productos de alta rotación se compran en mayor volumen y mejor condición comercial', color: 'green' },
+                { text: 'No es necesario controlar el stock físico nunca', color: 'red' },
+                { text: 'Es útil comparar stock de sistema con stock físico', color: 'green' }
+            ],
+            tutor: 'Pensá en reposición diaria para stock mínimo y compras periódicas grandes para alta rotación.',
+            explanation: 'La reposición se adapta al movimiento: mínima diaria para medicamentos básicos y compras periódicas en volumen para productos de alta rotación, con control de stock físico y de sistema.'
+        }
+    ],
+
+    // ===================== ANÁLISIS =====================
+    analisis: [
+        {
+            type: 'text',
+            badge: 'Software',
+            title: 'Funciones del software de gestión',
+            instruction: 'Menciona al menos dos funciones que ofrece un software de gestión de farmacia.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    v.includes('stock') ||
+                    v.includes('vencim') ||
+                    v.includes('iva') ||
+                    v.includes('reporte') ||
+                    v.includes('compras') ||
+                    v.includes('ventas') ||
+                    v.includes('pedido') ||
+                    v.includes('código de barras')
+                );
+            },
+            tutor: 'Pensá en búsqueda de productos, control de stock, compras, ventas e IVA.',
+            explanation: 'Los sistemas de facturación permiten buscar productos, administrar stock, lotes y vencimientos, gestionar compras y ventas y generar reportes e IVA.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Búsqueda',
+            title: 'Búsqueda de productos',
+            instruction: 'Selecciona formas en que el software permite buscar productos.',
+            items: [
+                { text: 'Por nombre comercial', correct: true },
+                { text: 'Por código de barras', correct: true },
+                { text: 'Por monodroga o acción terapéutica', correct: true },
+                { text: 'Solo por color del envase', correct: false }
+            ],
+            tutor: 'El manual menciona nombre, código de barras, monodroga, acción terapéutica, potencia, etc.',
+            explanation: 'El software permite búsquedas por nombre, código de barras, monodroga, acción terapéutica y otras variables definidas.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Stock',
+            title: 'Administración de stock',
+            instruction: 'Marca en verde enunciados correctos sobre la administración de stock en el sistema.',
+            items: [
+                { text: 'Permite manejar stock fraccionado, lote y vencimiento', color: 'green' },
+                { text: 'Ayuda a generar pedidos según ventas o stock mínimo', color: 'green' },
+                { text: 'Impide obtener reportes de control', color: 'red' },
+                { text: 'Facilita el control de existencias físicas versus sistema', color: 'green' }
+            ],
+            tutor: 'Pensá en cómo el sistema ayuda a decidir compras y controlar vencimientos.',
+            explanation: 'La administración de stock en software registra fraccionamiento, lotes y vencimientos, y genera información útil para pedidos y control de existencias.'
+        },
+        {
+            type: 'text',
+            badge: 'Trazabilidad',
+            title: 'Concepto de trazabilidad',
+            instruction: 'Define qué es la trazabilidad de medicamentos según el manual.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    v.includes('seguim') ||
+                    v.includes('cadena de distrib') ||
+                    v.includes('identific') ||
+                    v.includes('registro') ||
+                    v.includes('unidad') ||
+                    v.includes('eslabon')
+                );
+            },
+            tutor: 'Pensá en identificar cada unidad y seguirla desde el laboratorio hasta el paciente.',
+            explanation: 'La trazabilidad consiste en identificar individualmente cada unidad de medicamento y registrar su recorrido en toda la cadena de distribución para detectar problemas y evitar ilegítimos.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Trazabilidad eslabones',
+            title: 'Eslabones de la trazabilidad',
+            instruction: 'Selecciona actores que participan en el sistema de trazabilidad.',
+            items: [
+                { text: 'Laboratorios productores', correct: true },
+                { text: 'Distribuidoras y droguerías', correct: true },
+                { text: 'Farmacias y establecimientos asistenciales', correct: true },
+                { text: 'Pacientes/usuarios finales', correct: true }
+            ],
+            tutor: 'El manual menciona laboratorios, distribuidoras, operadores logísticos, droguerías, farmacias, establecimientos y pacientes.',
+            explanation: 'Todos los eslabones, desde el laboratorio hasta el paciente, registran movimientos para asegurar la trazabilidad del medicamento.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Sectores',
+            title: 'Sectores diferenciados',
+            instruction: 'Marca en verde enunciados correctos sobre sectores en la farmacia.',
+            items: [
+                { text: 'La farmacia debe ser independiente de otras actividades comerciales', color: 'green' },
+                { text: 'Debe tener al menos 25 m² con ambientes diferenciados', color: 'green' },
+                { text: 'No es necesario diferenciar despacho, laboratorio y depósito', color: 'red' },
+                { text: 'Los psicotrópicos deben almacenarse en sector separado y cerrado', color: 'green' }
+            ],
+            tutor: 'Fijate las exigencias de DINAVISA y SENAD sobre superficie y sectores.',
+            explanation: 'Las normas exigen farmacia independiente con superficie mínima y sectores diferenciados, y almacenamiento especial para psicotrópicos y estupefacientes.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Heladera',
+            title: 'Heladera y cadena de frío',
+            instruction: 'Selecciona prácticas correctas para el manejo de medicamentos refrigerados.',
+            items: [
+                { text: 'Registrar diariamente la temperatura de la heladera', correct: true },
+                { text: 'Mantener entre 2 °C y 8 °C', correct: true },
+                { text: 'Guardar medicamentos refrigerados en el freezer', correct: false },
+                { text: 'Usar bolsas térmicas o telgopor con gel frío para el traslado al paciente', correct: true }
+            ],
+            tutor: 'Recordá el ejemplo de planilla y el rango de temperatura indicado.',
+            explanation: 'Los medicamentos refrigerados requieren registro de temperatura, conservación entre 2 °C y 8 °C y traslado en contenedores térmicos adecuados.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Residuos',
+            title: 'Residuos patógenos',
+            instruction: 'Marca en verde enunciados correctos sobre tratamiento de residuos patógenos.',
+            items: [
+                { text: 'Incluyen gasas y algodones con sangre, jeringas y objetos cortantes', color: 'green' },
+                { text: 'Deben desecharse en recipientes especiales y bolsas rojas', color: 'green' },
+                { text: 'Pueden tirarse con la basura común del local', color: 'red' },
+                { text: 'Su tratamiento está regulado por la Ley 3361/07', color: 'green' }
+            ],
+            tutor: 'Pensá en los recipientes rígidos y la documentación que se exige al entregarlos.',
+            explanation: 'Los residuos patógenos se colocan en recipientes especiales, se documentan y se eliminan según la Ley 3361/07 mediante empresas o municipios.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Dispensación',
+            title: 'Elementos de la dispensación',
+            instruction: 'Selecciona componentes propios de una buena dispensación.',
+            items: [
+                { text: 'Entrega del medicamento', correct: true },
+                { text: 'Interpretación de la receta cuando corresponda', correct: true },
+                { text: 'Información sobre uso, dosis y horarios', correct: true },
+                { text: 'Entrega sin verificar lo solicitado por el paciente', correct: false }
+            ],
+            tutor: 'La dispensación va más allá de “dar el remedio”; incluye interpretación y consejo.',
+            explanation: 'La dispensación es un servicio profesional que integra entrega, interpretación de receta y consejo para un uso seguro y eficaz del medicamento.'
+        },
+        {
+            type: 'text',
+            badge: 'Farmacovigilancia',
+            title: 'Farmacovigilancia en la farmacia',
+            instruction: 'Explica brevemente qué significa farmacovigilancia en el contexto de la atención farmacéutica.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    v.includes('efecto advers') ||
+                    v.includes('seguim') ||
+                    v.includes('reacci') ||
+                    v.includes('monitore') ||
+                    v.includes('segur')
+                );
+            },
+            tutor: 'Pensá en seguir al paciente luego de la entrega para detectar problemas con la medicación.',
+            explanation: 'La farmacovigilancia implica el seguimiento del paciente para detectar efectos adversos y problemas relacionados con los medicamentos, aportando seguridad al tratamiento.'
+        }
+    ],
+
+    // ===================== ESCENARIOS =====================
+    escenarios: [
+        {
+            type: 'text',
+            badge: 'Recepción',
+            title: 'Control de un pedido',
+            instruction: 'Llega un pedido de una droguería nueva. ¿Qué documentación y controles básicos realizás antes de aceptar los productos?',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    v.includes('habilit') ||
+                    v.includes('certific') ||
+                    v.includes('ministerio') ||
+                    v.includes('factura') ||
+                    v.includes('vencim') ||
+                    v.includes('envase')
+                );
+            },
+            tutor: 'Pensá en exigir habilitación del proveedor y en controlar factura, vencimientos e integridad.',
+            explanation: 'Antes de aceptar un pedido se verifica la habilitación del proveedor, se controla la factura, vencimientos, precios, descuentos e integridad de los envases.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Stock físico',
+            title: 'Control de stock diario',
+            instruction: 'Marca en verde prácticas adecuadas en un control diario de stock.',
+            items: [
+                { text: 'Comparar stock físico con stock cargado en sistema', color: 'green' },
+                { text: 'Ignorar diferencias entre sistema y realidad', color: 'red' },
+                { text: 'Prestar especial atención a productos de alta rotación', color: 'green' },
+                { text: 'No registrar faltantes ni sobrantes', color: 'red' }
+            ],
+            tutor: 'Recordá que un buen control de stock impacta en la gestión comercial.',
+            explanation: 'El control de stock compara sistema y físico, prioriza productos de alta rotación y permite ajustar compras y reposiciones.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Vencimientos',
+            title: 'Gestión de vencimientos',
+            instruction: 'Selecciona acciones correctas al gestionar productos próximos a vencer.',
+            items: [
+                { text: 'Revisar periódicamente fechas de vencimiento de todos los productos', correct: true },
+                { text: 'Usar el sistema para alertas de vencimiento cuando esté disponible', correct: true },
+                { text: 'Vender productos vencidos si el cliente los acepta', correct: false },
+                { text: 'Clasificar medicamentos vencidos como residuos peligrosos', correct: true }
+            ],
+            tutor: 'Pensá en el rol del sistema y en las obligaciones legales con productos vencidos.',
+            explanation: 'Los vencimientos se controlan visualmente y con sistema; medicamentos vencidos son residuos peligrosos y deben desecharse según normativa.'
+        },
+        {
+            type: 'text',
+            badge: 'Cadena frío',
+            title: 'Ruptura de la cadena de frío',
+            instruction: 'Una partida de insulinas llega sin material refrigerante y a temperatura ambiente. ¿Qué riesgos implica y cómo actuás?',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    v.includes('rechaz') ||
+                    v.includes('no recibir') ||
+                    v.includes('estabil') ||
+                    v.includes('eficacia') ||
+                    v.includes('cadena de frio') ||
+                    v.includes('devol')
+                );
+            },
+            tutor: 'Pensá en la pérdida de estabilidad por no respetar el rango de 2–8 °C.',
+            explanation: 'Si se rompe la cadena de frío, la estabilidad y eficacia de las insulinas puede verse comprometida, por lo que debe rechazarse o devolverse la partida al proveedor.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Residuos caso',
+            title: 'Descartes patógenos',
+            instruction: 'Marca en verde qué conductas corresponden al descartar material cortopunzante y gasas con sangre.',
+            items: [
+                { text: 'Colocar agujas y ampollas en recipiente rígido especial', color: 'green' },
+                { text: 'Usar bolsas rojas para residuos patógenos', color: 'green' },
+                { text: 'Llenar los recipientes por encima de ¾ de su capacidad', color: 'red' },
+                { text: 'Registrar entregas en libro de actas con fecha, peso y sello', color: 'green' }
+            ],
+            tutor: 'Fijate en los envases rígidos y en la documentación exigida por la ley.',
+            explanation: 'Los residuos cortopunzantes se depositan en recipientes especiales, se embalan en bolsas rojas y se documenta cada entrega según la normativa.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Layout',
+            title: 'Organización del local',
+            instruction: 'Selecciona disposiciones correctas sobre la estructura física de la farmacia.',
+            items: [
+                { text: 'Local independiente de otras actividades comerciales', correct: true },
+                { text: 'Superficie mínima de 25 m² con ambientes diferenciados', correct: true },
+                { text: 'Despacho con acceso directo a la calle o zona de turnos', correct: true },
+                { text: 'Mezclar depósito con vivienda sin separación', correct: false }
+            ],
+            tutor: 'Pensá en las condiciones edilicias que exige la autoridad sanitaria.',
+            explanation: 'La farmacia debe ser independiente, tener superficies mínimas y ambientes separados como despacho, laboratorio y depósito.'
+        },
+        {
+            type: 'text',
+            badge: 'Dispensa',
+            title: 'Escenario de dispensación',
+            instruction: 'Un paciente trae una receta y no comprende bien cómo tomar el medicamento. ¿Qué pasos incluís en la dispensación?',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    v.includes('interpret') ||
+                    v.includes('receta') ||
+                    v.includes('explicar') ||
+                    v.includes('dosis') ||
+                    v.includes('horario') ||
+                    v.includes('derivar')
+                );
+            },
+            tutor: 'Pensá en interpretar la receta, explicar posología y valorar si necesitás derivarlo al médico.',
+            explanation: 'La dispensación incluye interpretar la receta, entregar el medicamento correcto, explicar dosis, horarios, posibles interacciones y derivar al profesional cuando corresponda.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Atención',
+            title: 'Atención farmacéutica y comunicación',
+            instruction: 'Marca en verde conductas que favorecen una buena atención farmacéutica.',
+            items: [
+                { text: 'Escuchar al paciente y mostrar interés genuino', color: 'green' },
+                { text: 'Utilizar un lenguaje claro y comprensible', color: 'green' },
+                { text: 'Minimizar los problemas que relata el paciente', color: 'red' },
+                { text: 'Mantener un clima cordial y respetuoso', color: 'green' }
+            ],
+            tutor: 'Recordá que cada cliente siente que su problema es único y requiere atención personalizada.',
+            explanation: 'La atención farmacéutica se basa en escucha activa, lenguaje claro, respeto y foco en las necesidades individuales del paciente.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Cliente',
+            title: 'Tipos de clientes en farmacia',
+            instruction: 'Selecciona características propias de clientes particulares de farmacia.',
+            items: [
+                { text: 'Compran medicamentos y otros productos como perfumería o accesorios', correct: true },
+                { text: 'Valoran el asesoramiento y servicio postventa', correct: true },
+                { text: 'Solo se fijan en el precio y nunca en el servicio', correct: false },
+                { text: 'Esperan stock suficiente de los productos que usan habitualmente', correct: true }
+            ],
+            tutor: 'Pensá en el cliente que busca mejorar su salud y calidad de vida, no solo “comprar algo”.',
+            explanation: 'Los clientes particulares combinan compra de medicamentos con otros productos y valoran asesoramiento, stock adecuado y servicio postventa.'
+        },
+        {
+            type: 'text',
+            badge: 'Tecnología',
+            title: 'Uso de la tecnología con pacientes',
+            instruction: 'Describe una forma en que la farmacia puede usar la tecnología para mejorar la relación con el paciente-cliente.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    v.includes('base de datos') ||
+                    v.includes('recordar') ||
+                    v.includes('vacuna') ||
+                    v.includes('tratamiento') ||
+                    v.includes('contacto') ||
+                    v.includes('mensaje') ||
+                    v.includes('seguimiento')
+                );
+            },
+            tutor: 'Pensá en bases de datos, recordatorios de medicación, turnos o vacunas.',
+            explanation: 'La farmacia puede usar bases de datos y canales digitales para recordar medicaciones, vacunas o vencimientos, mejorando el seguimiento y la adherencia.'
+        }
+    ],
+
+    // ===================== PRÁCTICA =====================
+    practica: [
+        {
+            type: 'checklist',
+            badge: 'Ingreso',
+            title: 'Checklist de recepción diaria',
+            instruction: 'Selecciona pasos que no deberían faltar en una recepción diaria de mercadería.',
+            items: [
+                { text: 'Verificar cantidad y descripción contra factura', correct: true },
+                { text: 'Revisar fechas de vencimiento y descuentos', correct: true },
+                { text: 'Controlar integridad de envases y, si corresponde, cadena de frío', correct: true },
+                { text: 'Cargar productos al stock del sistema sin revisar nada', correct: false }
+            ],
+            tutor: 'Pensá en una rutina que te permita detectar errores antes de ingresar al stock.',
+            explanation: 'Una buena recepción incluye controlar factura, vencimientos, estado físico y luego cargar correctamente al sistema de farmacia.'
+        },
+        {
+            type: 'text',
+            badge: 'Orden',
+            title: 'Criterios de ordenamiento de medicamentos',
+            instruction: 'Menciona al menos dos criterios posibles para ordenar medicamentos en el depósito.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    v.includes('alfab') ||
+                    v.includes('laborat') ||
+                    v.includes('acción terap') ||
+                    v.includes('sector')
+                );
+            },
+            tutor: 'El manual menciona orden alfabético, por laboratorio productor o por acción terapéutica.',
+            explanation: 'Los medicamentos pueden ordenarse alfabéticamente, por laboratorio o por acción terapéutica, siempre separados de otros productos.'
+        },
+        {
+            type: 'blanks',
+            badge: 'Temperatura',
+            title: 'Rangos de temperatura',
+            instruction: 'Completa los rangos aproximados: heladera ______ a ______ °C, ambiente no más de ______ °C.',
+            blanks: ['2', '8', '25'],
+            tutor: 'Recordá: 2–8 °C para refrigerados y no más de 25 °C para productos de ambiente.',
+            explanation: 'Los medicamentos refrigerados se conservan entre 2 °C y 8 °C, mientras que los de ambiente no deben superar aproximadamente los 25 °C.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Perfumería',
+            title: 'Ubicación de otros productos',
+            instruction: 'Marca en verde prácticas correctas con perfumería, regalería y accesorios.',
+            items: [
+                { text: 'Pueden exhibirse en el salón de ventas', color: 'green' },
+                { text: 'Pueden almacenarse mezclados en el depósito con medicamentos psicotrópicos', color: 'red' },
+                { text: 'Deben mantenerse también ordenados y en buenas condiciones', color: 'green' },
+                { text: 'No requieren ningún tipo de control de vencimiento', color: 'red' }
+            ],
+            tutor: 'Recordá la separación de sectores y la obligación de control de vencimientos.',
+            explanation: 'Los productos de perfumería y regalería se exhiben en el salón y también requieren orden y control de vencimientos cuando corresponda.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Residuos prácticos',
+            title: 'Clasificación práctica de residuos',
+            instruction: 'Para cada elemento, ¿lo considerarías residuo patógeno según el manual?',
+            items: [
+                { text: 'Jeringa usada con restos de sangre', correct: true },
+                { text: 'Gasa con secreciones y sangre', correct: true },
+                { text: 'Envase vacío y limpio de crema cosmética', correct: false },
+                { text: 'Medicamento vencido', correct: true }
+            ],
+            tutor: 'Los patógenos incluyen material contaminado y medicamentos que ya no pueden usarse.',
+            explanation: 'Materiales con sangre, cortopunzantes y medicamentos vencidos son residuos patógenos; cosméticos deteriorados no entran en esta categoría.'
+        },
+        {
+            type: 'text',
+            badge: 'Caso cliente',
+            title: 'Manejo de un cliente “consumidor”',
+            instruction: 'Un cliente pide un producto porque lo vio en publicidad, pero no es adecuado para su situación. ¿Cómo actuás desde tu rol?',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    v.includes('orient') ||
+                    v.includes('explicar') ||
+                    v.includes('no es adecuado') ||
+                    v.includes('derivar') ||
+                    v.includes('salud') ||
+                    v.includes('promoción')
+                );
+            },
+            tutor: 'El manual habla de clientes “consumidores” y del rol de promoción de la salud.',
+            explanation: 'El auxiliar debe orientar, explicar si el producto no es adecuado y priorizar la salud del paciente por encima del consumo impulsivo.'
+        },
+        {
+            type: 'traffic',
+            badge: 'Servicio',
+            title: 'Reducción de barreras administrativas',
+            instruction: 'Marca en verde ejemplos de cómo reducir barreras administrativas para el paciente.',
+            items: [
+                { text: 'Ayudar a gestionar trámites relacionados con su medicación', color: 'green' },
+                { text: 'Negarse a colaborar con cualquier gestión adicional', color: 'red' },
+                { text: 'Tratar de conseguir la medicación necesaria con celeridad', color: 'green' },
+                { text: 'Mantener una actitud indiferente frente a sus dificultades', color: 'red' }
+            ],
+            tutor: 'El manual menciona eliminar barreras administrativas como parte de la buena atención.',
+            explanation: 'Reducir barreras administrativas implica ayudar en trámites y buscar soluciones ágiles para que el paciente acceda al tratamiento.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Comunicación',
+            title: 'Buenas prácticas de comunicación',
+            instruction: 'Selecciona buenas prácticas comunicacionales del auxiliar de farmacia.',
+            items: [
+                { text: 'Escuchar activamente al paciente', correct: true },
+                { text: 'Utilizar vocabulario comprensible', correct: true },
+                { text: 'Mostrar cordialidad y simpatía', correct: true },
+                { text: 'Ridiculizar dudas o temores del paciente', correct: false }
+            ],
+            tutor: 'Pensá en la importancia de la comunicación verbal y el clima del local.',
+            explanation: 'Una comunicación efectiva exige escucha, lenguaje claro y trato cordial y respetuoso con cada paciente.'
+        },
+        {
+            type: 'text',
+            badge: 'Registro',
+            title: 'Libro de residuos patógenos',
+            instruction: 'Describe qué datos básicos debe contener el libro o planilla donde se registran las entregas de residuos patógenos.',
+            validation: (raw) => {
+                const v = normalizar(raw);
+                return (
+                    v.includes('fecha') ||
+                    v.includes('peso') ||
+                    v.includes('sello') ||
+                    v.includes('datos') ||
+                    v.includes('farmacia') ||
+                    v.includes('director')
+                );
+            },
+            tutor: 'El manual menciona un libro de actas con datos de farmacia, director técnico, fecha, peso y sello.',
+            explanation: 'El registro de residuos patógenos incluye datos de la farmacia y del director técnico, fecha de entrega, peso de residuos y sello de quien los recibe.'
+        },
+        {
+            type: 'checklist',
+            badge: 'Reportes',
+            title: 'Uso de reportes del sistema',
+            instruction: 'Selecciona usos prácticos de los reportes estadísticos del software.',
+            items: [
+                { text: 'Analizar ventas por producto o categoría', correct: true },
+                { text: 'Detectar productos de alta y baja rotación', correct: true },
+                { text: 'Planificar compras y negociación con proveedores', correct: true },
+                { text: 'Decorar el salón con gráficos sin analizarlos', correct: false }
+            ],
+            tutor: 'Pensá en cómo los reportes ayudan a tomar decisiones administrativas y comerciales.',
+            explanation: 'Los reportes del sistema permiten analizar ventas, rotación y existencias para planificar mejor las compras y mejorar la gestión.'
+        }
+    ]
+};
+
+        let currentModule = '';
+        let currentIndex = 0;
+        let attemptCount = 0;
+        let lastAudioModule = null;
+
+        // ===== MAPEO DE MÓDULOS A AUDIOS =====
+        const moduloAudioMap = {
+            'sintesis': 'mensaje1',
+            'analisis': 'mensaje2',
+            'escenarios': 'mensaje3',
+            'practica': 'mensaje4'
+        };
+
+        function startModule(id) {
+            playSound('click');
+            currentModule = id;
+            currentIndex = 0;
+            attemptCount = 0;
+            lastAudioModule = id;
+
+            // Reproducir el audio del módulo correspondiente
+            const audioKey = moduloAudioMap[id];
+            if (audioKey) {
+                playAudio(audioKey);
+            }
+
+            document.getElementById('selectionScreen').style.display = 'none';
+            document.getElementById('activityScreen').classList.add('active');
+
+            setTimeout(loadActivity, 300);
+        }
+
+        function loadActivity() {
+            attemptCount = 0;
+
+            if (currentIndex >= modules[currentModule].length) {
+                // Reproducir "lolograste.mp3" al terminar TODAS las preguntas
+                playAudio('lolograste');
+                playSound('success');
+                alert('¡Excelente! Completaste este bloque.');
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+                return;
+            }
+
+            const data = modules[currentModule][currentIndex];
+            const container = document.getElementById('activityContainer');
+
+            const msg = `Pregunta ${currentIndex + 1} de ${modules[currentModule].length}: ${data.tutor}`;
+            document.getElementById('tutorMessage').innerText = msg;
+
+            let html = `<span class="act-badge">${data.badge}</span>
+                        <h2 class="act-title">${data.title}</h2>
+                        <p class="act-instruction">${data.instruction}</p>`;
+
+            if (data.type === 'text') {
+                html += `<textarea id="txtInput" class="student-input" placeholder="Escribe tu respuesta con tus palabras..."></textarea>`;
+            } else if (data.type === 'blanks') {
+                html += `<div style="font-size:1.2rem; line-height:2.5;">`;
+                data.blanks.forEach((b, i) => {
+                    html += `${i + 1}. <input type="text" class="fill-input" data-ans="${b}"> <br>`;
+                });
+                html += `</div>`;
+            } else if (data.type === 'traffic') {
+                data.items.forEach((item, i) => {
+                    html += `<div class="traffic-row" id="row-${i}">
+                                <span>${item.text}</span>
+                                <div style="display:flex; gap:10px;">
+                                    <div class="traffic-btn bg-green" onclick="selTraffic(${i}, 'green')"></div>
+                                    <div class="traffic-btn bg-yellow" onclick="selTraffic(${i}, 'yellow')"></div>
+                                    <div class="traffic-btn bg-red" onclick="selTraffic(${i}, 'red')"></div>
+                                </div>
+                            </div>`;
+                });
+            } else if (data.type === 'checklist') {
+                data.items.forEach((item) => {
+                    html += `<div class="checklist-item" onclick="toggleCheck(this)" data-correct="${item.correct}">
+                                <div class="check-box"></div>
+                                <span>${item.text}</span>
+                            </div>`;
+                });
+            }
+
+            html += `<div id="feedback" class="feedback-area"></div>
+                     <button id="btnCheck" class="btn-action" onclick="validate()">Verificar respuesta</button>
+                     <button class="btn-action btn-back" onclick="location.reload()">Salir al menú</button>`;
+
+            container.innerHTML = html;
+            wireUiSounds();
+        }
+
+        let trafficAns = {};
+
+        function selTraffic(idx, color) {
+            trafficAns[idx] = color;
+            const row = document.getElementById(`row-${idx}`);
+            row.querySelectorAll('.traffic-btn').forEach(b => b.classList.remove('active'));
+            row.querySelector(`.bg-${color}`).classList.add('active');
+            playSound('click');
+        }
+
+        function toggleCheck(el) {
+            el.classList.toggle('selected');
+            el.querySelector('.check-box').innerText = el.classList.contains('selected') ? '✓' : '';
+
+            if (el.classList.contains('selected')) {
+                el.style.borderColor = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.background = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.borderColor = 'var(--ficde-naranja)';
+                el.querySelector('.check-box').style.color = 'white';
+            } else {
+                el.style.borderColor = 'transparent';
+                el.querySelector('.check-box').style.background = 'transparent';
+                el.querySelector('.check-box').style.borderColor = '#ccc';
+            }
+
+            playSound('click');
+        }
+
+        function validate() {
+            const data = modules[currentModule][currentIndex];
+            const feedback = document.getElementById('feedback');
+            let isCorrect = false;
+
+            if (data.type === 'text') {
+                const val = document.getElementById('txtInput').value;
+                isCorrect = data.validation(val);
+            } else if (data.type === 'blanks') {
+                const inputs = document.querySelectorAll('.fill-input');
+                let hits = 0;
+                inputs.forEach(inp => {
+                    const v = normalizar(inp.value);
+                    const ans = normalizar(inp.dataset.ans);
+                    if (v.length > 1 && ans.startsWith(v.slice(0, Math.max(2, Math.min(v.length, ans.length))))) hits++;
+                });
+                isCorrect = (hits === data.blanks.length);
+            } else if (data.type === 'traffic') {
+                let hits = 0;
+                data.items.forEach((item, i) => { if (trafficAns[i] === item.color) hits++; });
+                isCorrect = (hits === data.items.length);
+            } else if (data.type === 'checklist') {
+                let correct = true;
+                document.querySelectorAll('.checklist-item').forEach(item => {
+                    const sel = item.classList.contains('selected');
+                    const should = item.dataset.correct === 'true';
+                    if (sel !== should) correct = false;
+                });
+                isCorrect = correct;
+            }
+
+            feedback.style.display = 'block';
+
+            if (isCorrect) {
+                playAudio('correcto');
+                playSound('success');
+                feedback.className = 'feedback-area feedback-success';
+                feedback.innerHTML = `<strong>¡Muy bien!</strong><br>${data.explanation}`;
+                document.getElementById('btnCheck').innerText = 'Siguiente pregunta →';
+                document.getElementById('btnCheck').onclick = () => { currentIndex++; loadActivity(); };
+            } else {
+                attemptCount++;
+
+                if (attemptCount < 2) {
+                    playAudio('error1');
+                    feedback.className = 'feedback-area feedback-retry';
+                    feedback.innerHTML = `<strong>Buen intento.</strong> Revisá tu respuesta. Pista: ${data.tutor}`;
+                } else {
+                    playAudio('error2');
+                    feedback.className = 'feedback-area feedback-fail';
+                    feedback.innerHTML = `<strong>No pasa nada, aprendamos juntos:</strong><br>${data.explanation}`;
+                    document.getElementById('btnCheck').innerText = 'Entendido, continuar →';
+                    document.getElementById('btnCheck').onclick = () => { currentIndex++; loadActivity(); };
+                }
+            }
+        }
+
+        function replayTutorMessage() {
+            // Replay del último audio de módulo reproducido
+            if (lastAudioModule) {
+                const audioKey = moduloAudioMap[lastAudioModule];
+                if (audioKey) {
+                    playAudio(audioKey);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
